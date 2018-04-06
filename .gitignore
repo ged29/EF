@@ -1,0 +1,7 @@
+# /
+bin/
+obj/
+packages/
+aspnet_client/
+node_modules/
+.vs/
