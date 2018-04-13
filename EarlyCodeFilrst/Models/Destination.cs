@@ -26,10 +26,23 @@ namespace EarlyCodeFilrst.Models
     {
         public DestinationConfig()
         {
-            Property(p => p.Name).IsRequired().HasMaxLength(200);
+            Property(p => p.DestinationId).HasColumnName("LocationId");
+            Property(p => p.Name).IsRequired().HasMaxLength(200).HasColumnName("LocationName");
             Property(p => p.Description).HasMaxLength(500);
             Property(p => p.Photo).HasColumnType("image");
-            HasMany(d => d.Lodgings).WithRequired(l => l.Destination);
+            HasMany(d => d.Lodgings).WithRequired(l => l.Destination).HasForeignKey(l => l.LocationId);
+
+            Map(mapConfig =>
+            {
+                mapConfig.Properties(destination => new { destination.Name, destination.Country, destination.Description });
+                mapConfig.ToTable("Locations");
+            });
+
+            Map(mapConfig =>
+            {
+                mapConfig.Property(destination => destination.Photo);
+                mapConfig.ToTable("LocationPhotos");
+            });
         }
     }
 }

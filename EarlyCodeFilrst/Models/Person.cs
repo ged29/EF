@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 
 namespace EarlyCodeFilrst.Models
@@ -11,11 +12,17 @@ namespace EarlyCodeFilrst.Models
             Info = new PersonalInfo();
         }
 
-        public int SocialSecurityNumber { get; set; }
+        public int PersonId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Address Address { get; set; } // HostPropertyName_PropertyName -> Address_StreetAddress
         public PersonalInfo Info { get; set; }
+
+        public PersonPhoto Photo { get; set; }
+
+        public List<Lodging> PrimaryContactFor { get; set; }
+        public List<Lodging> SecondaryContactFor { get; set; }
+        //public List<Reservation> Reservations { get; set; }
 
         public byte[] RowVersion { get; set; }
     }
@@ -24,10 +31,10 @@ namespace EarlyCodeFilrst.Models
     {
         public PersonConfig()
         {
-            HasKey(p => p.SocialSecurityNumber);
-            Property(p => p.SocialSecurityNumber).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(p => p.RowVersion).IsRowVersion();
-            Property(p => p.SocialSecurityNumber).IsConcurrencyToken();
+            ToTable("People");
+            HasKey(p => p.PersonId);
+            Property(p => p.PersonId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(p => p.RowVersion).IsRowVersion().IsConcurrencyToken();
         }
     }
 }

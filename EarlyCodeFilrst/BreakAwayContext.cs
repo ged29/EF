@@ -28,17 +28,25 @@ namespace EarlyCodeFilrst
             modelBuilder.Configurations.Add(new PersonConfig());
             modelBuilder.Configurations.Add(new AddressConfig());
             modelBuilder.Configurations.Add(new PersonalInfoConfig());
-            
+            modelBuilder.Configurations.Add(new InternetSpecialConfig());
+            modelBuilder.Configurations.Add(new PersonPhotoConfig());
+
             base.OnModelCreating(modelBuilder);
         }
 
         public static void Test()
         {
+#if false
             var destination = new Destination
             {
                 Name = "Bali",
                 Country = "Indonesia",
-                Description = "EcoTourism at its best in exquisite Bali"
+                Description = "EcoTourism at its best in exquisite Bali",
+                Lodgings = new List<Lodging> {
+                    new Lodging{ Name = "Lodging1", Owner = "OwnerA", MilesFromNearestAirport = 150 },
+                    //new Lodging{ Name = "Lodging2", Owner = "OwnerA", MilesFromNearestAirport = 50 },
+                    new Resort { Name = "Top Notch Resort and Spa", MilesFromNearestAirport=30, Activities="Spa, Hiking, Skiing, Ballooning"}
+                }
             };
 
             var trip = new Trip
@@ -52,7 +60,8 @@ namespace EarlyCodeFilrst
             {
                 FirstName = "Rowan",
                 LastName = "Miller",
-                SocialSecurityNumber = 12345678
+                PersonId = 12345678,
+                Photo = new PersonPhoto { Photo = new Byte[0], Caption = "Some caption here" }
             };
 
             using (var context = new BreakAwayContext())
@@ -62,6 +71,71 @@ namespace EarlyCodeFilrst
                 context.People.Add(person);
                 context.SaveChanges();
             }
+
+            using (var context = new BreakAwayContext())
+            {
+                var rez = context.People.Include("Photo").ToArray();
+            }
+#endif
+            InsertResort();
+            InsertHostel();
+            GetAllLodgings();
+        }
+
+        private static void InsertResort()
+        {
+            var resort = new Resort
+            {
+                Name = "Top Notch Resort and Spa",
+                MilesFromNearestAirport = 30,
+                Activities = "Spa, Hiking, Skiing, Ballooning",
+                Destination = new Destination
+                {
+                    Name = "Stowe, Vermont",
+                    Country = "USA"
+                }
+            };
+
+            using (var context = new BreakAwayContext())
+            {
+                context.Lodgings.Add(resort);
+                context.SaveChanges();
+            }
+        }
+
+        private static void InsertHostel()
+        {
+            var hostel = new Hostel
+            {
+                Name = "AAA Budget Youth Hostel",
+                MilesFromNearestAirport = 25,
+                PrivateRoomsAvailable = false,
+                Destination = new Destination
+                {
+                    Name = "Hanksville, Vermont",
+                    Country = "USA"
+                }
+            };
+
+            using (var context = new BreakAwayContext())
+            {
+                context.Lodgings.Add(hostel);
+                context.SaveChanges();
+            }
+        }
+
+        private static void GetAllLodgings()
+        {
+            using (var context = new BreakAwayContext())
+            {
+                var lodgings = context.Lodgings.ToList();
+                foreach (var lodging in lodgings)
+                {
+                    Console.WriteLine("Name: {0} Type: {1}", lodging.Name, lodging.GetType().ToString());
+                }
+            }
+
+            Console.ReadKey();
         }
     }
 }

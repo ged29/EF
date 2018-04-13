@@ -14,7 +14,10 @@ namespace EarlyCodeFilrst.Models
     {
         public AddressConfig()
         {
-            Property(p => p.StreetAddress).HasMaxLength(150);
+            Property(p => p.StreetAddress).HasMaxLength(150).HasColumnName("StreetAddress");
+            Property(p => p.City).HasMaxLength(50).HasColumnName("City");
+            Property(p => p.State).HasMaxLength(3).HasColumnName("State");
+            Property(p => p.ZipCode).HasMaxLength(5).HasColumnName("ZipCode");
         }
     }
 }
